@@ -6,3 +6,6 @@ sentence-transformers
 joblib
 flask
 requests
+matplotlib
+lime
+shap

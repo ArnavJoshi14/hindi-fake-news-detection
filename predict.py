@@ -15,7 +15,7 @@ if __name__ == "__main__":
     print(f"Style Model: {result['model_scores']['style_model']:.4f}")
     print(f"TF-IDF Model:{result['model_scores']['tfidf_model']:.4f}")
 
-from explainability import full_explain, plot_lime, plot_style_shap, plot_meta_shap
+from explainability import full_explain, plot_tfidf_lime, plot_semantic_lime, plot_style_shap, plot_meta_shap
 
 explain = input("\nRun explainability? (y/n): ").strip().lower()
 if explain == "y":
@@ -24,11 +24,13 @@ if explain == "y":
 
     save = input("Save plots? (y/n): ").strip().lower()
     if save == "y":
-        plot_lime(exp,       save_path="lime_words.png")
-        plot_style_shap(exp, save_path="style_shap.png")
-        plot_meta_shap(exp,  save_path="meta_shap.png")
-        print("Plots saved: lime_words.png, style_shap.png, meta_shap.png")
+        plot_tfidf_lime(exp,    save_path="tfidf_lime.png")
+        plot_semantic_lime(exp, save_path="semantic_lime.png")
+        plot_style_shap(exp,    save_path="style_shap.png")
+        plot_meta_shap(exp,     save_path="meta_shap.png")
+        print("Plots saved: tfidf_lime.png, semantic_lime.png, style_shap.png, meta_shap.png")
     else:
-        plot_lime(exp)
+        plot_tfidf_lime(exp)
+        plot_semantic_lime(exp)
         plot_style_shap(exp)
         plot_meta_shap(exp)
