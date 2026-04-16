@@ -23,13 +23,18 @@ from train_user_model import extract_user_features
 
 # 4. Generate user scores from TRAIN users only
 print("Calculating user scores for training...")
-all_user_scores = user_reliability_model.predict_proba(extract_user_features(train_users))[:, 1]
+all_user_scores = user_reliability_model.predict_proba(
+    extract_user_features(train_users)
+)[:, 1]
+
 real_user_scores = all_user_scores[train_users['is_fake'] == 0]
 fake_user_scores = all_user_scores[train_users['is_fake'] == 1]
 
 def sample_user_score(label):
-    if label == 0: return np.random.choice(real_user_scores)
-    else: return np.random.choice(fake_user_scores)
+    if label == 0:
+        return np.random.choice(real_user_scores)
+    else:
+        return np.random.choice(fake_user_scores)
 
 # 5. Hindi Style Features
 hindi_stopwords = set(["है","हैं","था","थे","की","का","के","को","में","पर","से","तक","और","या","लेकिन","अगर","तो","ही","भी","नहीं","क्या","क्यों","कौन","कब","यह","वह","इन","उन","उस","इस","कुछ","सब","बहुत","अब","जब","तब","जहाँ","वहाँ"])
@@ -58,7 +63,7 @@ def generate_social_meta_features(df):
     style_probs = style_clf.predict_proba(X_style)[:, 1]
     tfidf_probs = tfidf_clf.predict_proba(X_tfidf)[:, 1]
     
-    # Simulating user scores based on news label
+    # Simulated user scores
     user_scores = np.array([sample_user_score(l) for l in df['label']])
     
     return np.column_stack((text_probs, style_probs, tfidf_probs, user_scores))
@@ -67,14 +72,20 @@ print("Generating Social Meta features (Train News + Train Users)...")
 X_meta_train = generate_social_meta_features(train_df)
 y_train = train_df['label']
 
+# 7. Scale features
 scaler = StandardScaler()
 X_meta_train = scaler.fit_transform(X_meta_train)
 
+# 🔥 8. Reduce user feature weight (IMPORTANT)
+USER_WEIGHT = 0.3   # try 0.1 / 0.3 / 0.5
+X_meta_train[:, 3] *= USER_WEIGHT
+
 print("Training Social Meta Model...")
-social_meta_model = LogisticRegression()
+social_meta_model = LogisticRegression(max_iter=1000)
 social_meta_model.fit(X_meta_train, y_train)
 
 # Save
 joblib.dump(social_meta_model, "models/social_meta_model.pkl")
 joblib.dump(scaler, "models/social_meta_scaler.pkl")
+
 print("✅ Social Meta Model trained and saved!")

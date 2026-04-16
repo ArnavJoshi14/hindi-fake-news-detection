@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, classification_report
 import joblib
 
@@ -34,7 +34,7 @@ y_train = train_users['is_fake']
 
 # 3. Train
 print("Training User Reliability Model (on Train Users only)...")
-user_model = RandomForestClassifier(n_estimators=100, random_state=42)
+user_model = LogisticRegression(random_state=42)
 user_model.fit(X_train, y_train)
 
 # 4. Save

@@ -181,19 +181,19 @@
         resBox.style.display = 'block';
         resBox.className = 'result ' + (data.label === 'FAKE' ? 'fake' : 'real');
         verdict.innerText = data.label;
-        confidence.innerText = `Confidence Score: ${(data.confidence * 100).toFixed(2)}%`;
+        confidence.innerText = `Confidence Score: ${(data.confidence).toFixed(2)}`;
 
         let gridHtml = `
             <div class="score-box">
-                <span class="score-val">${(data.model_scores.text_model * 100).toFixed(1)}%</span>
+                <span class="score-val">${(data.model_scores.text_model).toFixed(2)}</span>
                 <span class="score-label">Text Meaning</span>
             </div>
             <div class="score-box">
-                <span class="score-val">${(data.model_scores.style_model * 100).toFixed(1)}%</span>
+                <span class="score-val">${(data.model_scores.style_model).toFixed(2)}</span>
                 <span class="score-label">Writing Style</span>
             </div>
             <div class="score-box">
-                <span class="score-val">${(data.model_scores.tfidf_model * 100).toFixed(1)}%</span>
+                <span class="score-val">${(data.model_scores.tfidf_model).toFixed(2)}</span>
                 <span class="score-label">Keyword Freq</span>
             </div>
         `;
@@ -201,7 +201,7 @@
         if(data.model_scores.user_reliability !== null) {
             gridHtml += `
                 <div class="score-box">
-                    <span class="score-val">${(data.model_scores.user_reliability * 100).toFixed(1)}%</span>
+                    <span class="score-val">${(data.model_scores.user_reliability).toFixed(2)}</span>
                     <span class="score-label">User Credibility</span>
                 </div>
             `;
